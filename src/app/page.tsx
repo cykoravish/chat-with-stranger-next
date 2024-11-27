@@ -2,11 +2,15 @@
 import Image from "next/image";
 import React from "react";
 import { useAppContext } from "../context";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const { setName } = useAppContext();
+  const { name, setName } = useAppContext();
+  const router = useRouter();
   const submitNameHandler = () => {
     console.log("name submitted");
+    setName("");
+    router.push("/chat");
   };
   return (
     <div className="w-full h-screen flex justify-center items-center">
@@ -21,8 +25,8 @@ export default function Page() {
             <Image
               className="w-auto mx-auto"
               src="/logo.png"
-              width={200}
-              height={200}
+              width={150}
+              height={150}
               alt="❤️"
               priority
             />
@@ -37,6 +41,7 @@ export default function Page() {
             <input
               type="text"
               onChange={(e) => setName(e.target.value)}
+              value={name}
               className="px-4 w-[12rem] sm:w-[14rem] py-2 text-base rounded-lg focus:outline-none font-mono bg-transparent border border-darkgreen text-white"
             />
           </div>
