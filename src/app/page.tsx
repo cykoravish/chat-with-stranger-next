@@ -1,16 +1,28 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAppContext } from "../context";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
   const { name, setName } = useAppContext();
+  const [inputName, setInputName] = useState<string>("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (!name) {
+      document.cookie =
+        "username=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    }
+  }, [name]);
+
   const submitNameHandler = () => {
-    console.log("name submitted");
-    setName("");
-    router.push("/chat");
+    if (inputName) {
+      setName(inputName);
+      document.cookie = `username=${inputName}; path=/;`; //should i use useEffect here
+      console.log("name submitted", name);
+      router.replace("/chat");
+    }
   };
   return (
     <div className="w-full h-screen flex justify-center items-center">
@@ -40,8 +52,8 @@ export default function Page() {
             </label>
             <input
               type="text"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
+              onChange={(e) => setInputName(e.target.value)}
+              value={inputName}
               className="px-4 w-[12rem] sm:w-[14rem] py-2 text-base rounded-lg focus:outline-none font-mono bg-transparent border border-darkgreen text-white"
             />
           </div>
