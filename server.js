@@ -51,10 +51,10 @@ app
 
           rooms[room] = [waitingUser.id, socket.id];
 
-          io.to(room).emit(
-            "connectionMsg",
-            `${waitingUser.username} and ${socket.username} are now connected`
-          );
+          io.to(room).emit("connectionMsg", {
+            connected: true,
+            message: `${waitingUser.username} and ${socket.username} are now connected`,
+          });
           waitingUser = null;
         } else {
           console.log("setting waiting user: ", socket.id);
@@ -99,10 +99,10 @@ app
           const remainingSocket = io.sockets.sockets.get(remainingUserId);
 
           if (remainingSocket) {
-            remainingSocket.emit(
-              "connectionMsg",
-              "Your partner has disconnected. The room is closed now."
-            );
+            remainingSocket.emit("connectionMsg", {
+              connected: false,
+              message: "Your partner has disconnected. The room is closed now.",
+            });
             remainingSocket.leave(userRoom);
           }
           // Clean up room

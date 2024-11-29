@@ -3,17 +3,26 @@ import React, { useEffect, useState, useRef } from "react";
 import { getSocket } from "@/socket";
 import { useAppContext } from "@/context";
 import { useRouter } from "next/navigation";
+import ConnectingScreen from "@/components/ConnectingScreen";
 
 interface User {
   id: string;
   username: string;
 }
+interface ConMsg {
+  connected: boolean;
+  message: string;
+}
 
 export default function Chat() {
-  const [connectionMsg, setConnectionMsg] = useState<string>("");
+  const [connectionMsg, setConnectionMsg] = useState<ConMsg>({
+    connected: false,
+    message: "in waiting area",
+  });
   const [chatMessages, setChatMessages] = useState<string[]>([]);
   const [message, setMessage] = useState<string>("");
   const [users, setUsers] = useState<User[]>([]);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
   const { name } = useAppContext();
   const router = useRouter();
 
@@ -29,7 +38,8 @@ export default function Chat() {
 
     const currentSocket = socketRef.current;
 
-    if (!currentSocket.connected) { //i think remove this
+    if (!currentSocket.connected) {
+      //i think remove this
       console.log("Connecting to socket...");
       currentSocket.connect(); // Connect only if not already connected
     }
@@ -43,7 +53,15 @@ export default function Chat() {
     };
 
     // Listener for messages
-    const handleConnectionMsg = (msg: string) => setConnectionMsg(msg);
+    const handleConnectionMsg = (msg: ConMsg) => {
+      setConnectionMsg(msg);
+      if (msg.connected === true) {
+        setIsConnected(true);
+      }
+      // if (msg.connected === false) {
+      //   setIsConnected(false);
+      // }
+    };
 
     const handleChatMessage = (msg: string) => {
       console.log("message triggered", message);
@@ -75,13 +93,35 @@ export default function Chat() {
     }
   };
 
+  const reconnect = () => {
+    if (name) {
+      console.log("reconnecting");
+      setIsConnected(false);
+      socketRef.current.emit("join", { name });
+    }
+  };
+
+  if (!isConnected) {
+    return <ConnectingScreen />;
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-800 text-white p-4">
       <h1 className="text-2xl font-semibold mb-2">Chatting as: {name}</h1>
 
-      {connectionMsg && (
+      {connectionMsg.message && (
         <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-          {connectionMsg}
+          {connectionMsg.message}
+        </div>
+      )}
+      {!connectionMsg.connected && (
+        <div>
+          <button
+            className="bg-blue-500 text-white p-4"
+            onClick={() => reconnect()}
+          >
+            Find someone else
+          </button>
         </div>
       )}
 
@@ -99,7 +139,7 @@ export default function Chat() {
           )}
         </div>
 
-{/* Message Input and Send Button */}
+        {/* Message Input and Send Button */}
         <div className="flex items-center gap-2">
           <input
             type="text"
@@ -117,7 +157,7 @@ export default function Chat() {
         </div>
       </div>
 
-  {/* Online Users Section */}
+      {/* Online Users Section */}
       <div className="user-list bg-gray-700 p-4 rounded">
         <h2 className="text-xl font-semibold mb-2">Online Users</h2>
         <ul className="space-y-2">
