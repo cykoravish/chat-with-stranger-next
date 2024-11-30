@@ -3,6 +3,12 @@ import next from "next";
 import { Server } from "socket.io";
 import "./envConfig.js";
 
+export const getRandomImage = () => {
+  const randomNumber = Math.floor(Math.random() * 100);
+  const gender = Math.random() < 0.5 ? "men" : "women";
+  return `https://randomuser.me/api/portraits/${gender}/${randomNumber}.jpg`;
+};
+
 const dev = process.env.NODE_ENV !== "production";
 const hostname = process.env.HOST_NAME || "localhost";
 const port = process.env.PORT || 3003;
@@ -34,10 +40,12 @@ app
 
     io.on("connection", (socket) => {
       console.log("New client connected:", socket.id, socket.username);
+      socket.avatar = getRandomImage();
       // Log the total number of active connections
       console.log("Total Active Sockets:", io.sockets.sockets.size);
       socket.on("join", ({ name }) => {
         socket.username = name;
+        
         users[socket.id] = { id: socket.id, username: name };
         console.log("join trigger");
         // Notify everyone about the new connection
@@ -54,7 +62,12 @@ app
           io.to(room).emit("connectionMsg", {
             connected: true,
             message: `${waitingUser.username} and ${socket.username} are now connected`,
+            otherUser: {
+              name: waitingUser.username,
+              // avatar: waitingUser.avatar,
+            },
           });
+          // console.log("avatar: ", waitingUser.avatar);
           waitingUser = null;
         } else {
           console.log("setting waiting user: ", socket.id);
@@ -71,7 +84,11 @@ app
         );
 
         if (userRoom) {
-          io.to(userRoom).emit("chatMessage", `${socket.username}: ${message}`);
+          io.to(userRoom).emit("chatMessage", {
+            username: socket.username,
+            message,
+            avatar: socket.avatar,
+          });
         } else {
           console.log("user not in the room");
         }
@@ -102,6 +119,10 @@ app
             remainingSocket.emit("connectionMsg", {
               connected: false,
               message: "Your partner has disconnected. The room is closed now.",
+              otherUser: {
+                name: "",
+                //  avatar: ""
+              },
             });
             remainingSocket.leave(userRoom);
           }
