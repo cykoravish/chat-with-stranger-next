@@ -50,11 +50,9 @@ export default function Chat() {
 
     if (!currentSocket.connected) {
       //i think remove this
-      console.log("Connecting to socket...");
       currentSocket.connect(); // Connect only if not already connected
     }
 
-    console.log("joining chat");
     currentSocket.emit("join", { name });
     // Update the list of online users
     const handleUserList = (userList: User[]) => {
@@ -66,15 +64,10 @@ export default function Chat() {
       setConnectionMsg(msg);
       if (msg.connected === true) {
         setIsConnected(true);
-        console.log("connectionMsg: ", msg);
       }
-      // if (msg.connected === false) {
-      //   setIsConnected(false);
-      // }
     };
 
     const handleChatMessage = (msg: ChatMessage) => {
-      console.log("message triggered", message);
       setChatMessages((prev) => [...prev, msg]);
     };
 
@@ -89,7 +82,6 @@ export default function Chat() {
       // currentSocket.close();
       if (currentSocket.connected) {
         currentSocket.disconnect();
-        console.log("Socket disconnected");
       }
     };
 
@@ -110,7 +102,6 @@ export default function Chat() {
 
   const reconnect = () => {
     if (name) {
-      console.log("reconnecting");
       setIsConnected(false);
       socketRef.current.emit("join", { name });
     }
@@ -132,81 +123,6 @@ export default function Chat() {
 
   return (
     <>
-      {/* <div className="flex flex-col min-h-screen bg-gray-800 text-white p-4">
-      <h1 className="text-2xl font-semibold mb-2">Chatting as: {name}</h1>
-
-      {connectionMsg.message && (
-        <div className="bg-blue-600 text-white py-2 px-4 rounded mb-4">
-          {connectionMsg.message}
-        </div>
-      )}
-      {!connectionMsg.connected && (
-        <div>
-          <button
-            className="bg-blue-500 text-white p-4"
-            onClick={() => reconnect()}
-          >
-            Find someone else
-          </button>
-        </div>
-      )}
-
-      <div className="flex flex-col flex-grow mb-4">
-        <h2 className="text-xl font-semibold mb-2">Chat Messages</h2>
-        <div className="chat-messages bg-gray-700 p-4 rounded h-64 overflow-y-auto mb-4">
-          {chatMessages.length > 0 ? (
-            chatMessages.map((msg, index) => (
-              <div key={index} className="mb-2">
-                {msg}
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-400">No messages yet.</p>
-          )}
-        </div>
-
-     
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Type a message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="flex-grow bg-gray-600 text-white p-2 rounded outline-none"
-          />
-          <button
-            onClick={sendMessage}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Send
-          </button>
-        </div>
-      </div>
-
-     
-      <div className="user-list bg-gray-700 p-4 rounded">
-        <h2 className="text-xl font-semibold mb-2">Online Users</h2>
-        <ul className="space-y-2">
-          {users.length > 0 ? (
-            users.map((user) => (
-              <li
-                key={user.id}
-                className="flex items-center gap-2 bg-gray-600 p-2 rounded"
-              >
-                <span>{user.username}</span>
-                <span className="text-green-400 text-sm">(Online)</span>
-              </li>
-            ))
-          ) : (
-            <p className="text-gray-400">No users online.</p>
-          )}
-        </ul>
-      </div>
-    </div> */}
-
-      {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-      {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-
       <div className="min-h-screen flex flex-col">
         <div className="overflow-hidden">
           <div className="text-center border-darkgreen border-b shadow-lg fixed w-full z-10">

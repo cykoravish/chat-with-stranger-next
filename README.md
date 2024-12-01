@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chat with Strangers Application
 
-## Getting Started
+![Chat with Strangers Banner](./public/logo.png)
 
-First, run the development server:
+Welcome to **Chat with Strangers**! This is a real-time chat application where two random strangers can chat with each other anonymously. The application uses **Socket.IO** for real-time communication and **Next.js** for both the frontend and backend. The code is mostly written in **TypeScript**, but the backend is written in **JavaScript** to resolve certain issues with Next.js.
+
+## Live Demo
+
+You can try out the live version of the application here:  
+🌐 [ravish.fun](https://ravish.fun)
+
+## Features
+
+- **Real-time Chat**: Users can chat instantly with random strangers using Socket.IO.
+- **Anonymous Chat**: No login required, just enter and start chatting.
+- **Responsive Design**: Fully responsive interface for both desktop and mobile users.
+- **Socket.IO Integration**: Seamless communication using WebSockets for real-time data transfer.
+
+## Technologies Used
+
+- **Next.js** (Frontend & Backend)
+- **Socket.IO** (Real-time communication)
+- **TypeScript** (For most of the code)
+- **JavaScript** (For the backend to resolve Next.js-specific issues)
+- **Tailwind CSS** (For styling)
+- **Node.js** (For backend)
+
+## Installation
+
+To run this project locally, follow these steps:
+
+### 1. Clone the repository
 
 ```bash
+git clone https://github.com/cykoravish/chat-with-stranger-next.git
+
+cd chat-with-stranger-next
+
+npm install
+
+create .env and add
+PORT=
+NODE_ENV=
+HOST_NAME=
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+Go to http://localhost:PORT to view the application.
 ```
+## Contributing
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+  We welcome contributions to this project! If you'd like to contribute, feel free to open a Pull Request (PR) with your changes. Here are some ways you can help:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   - Fix Bugs: Identify and resolve bugs.
+   - Add Features: Propose new features or improve existing ones.
+   - Improve Code: Help clean up and refactor the codebase.
+   - Improve UI/UX: Suggest or implement changes to improve the user interface or experience.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How to Contribute
 
-## Learn More
+   - Fork the repository.
+   - Create a new branch for your changes.
+   - Make your changes and commit them.
+   - Push your changes to your forked repository.
+   - Open a pull request to the main repository.
 
-To learn more about Next.js, take a look at the following resources:
+## Issues
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- If you encounter any bugs or have any feature requests, please open an issue on the repository’s Issues page.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- This project is licensed under the MIT License.

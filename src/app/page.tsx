@@ -20,7 +20,6 @@ export default function Page() {
     if (inputName) {
       setName(inputName);
       document.cookie = `username=${inputName}; path=/;`; //should i use useEffect here
-      console.log("name submitted", name);
       router.replace("/chat");
     }
   };

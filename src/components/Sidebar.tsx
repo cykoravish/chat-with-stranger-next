@@ -7,7 +7,6 @@ import { User } from "@/app/chat/page";
 import { GoDotFill } from "react-icons/go";
 
 export default function Sidebar({ data }: { data: User[] }) {
-  console.log("props: ", data);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
