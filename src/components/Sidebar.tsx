@@ -1,130 +1,141 @@
-"use client";
-import Link from "next/link";
-import React, { useState } from "react";
-import { IoClose } from "react-icons/io5";
-import { HiMenuAlt3 } from "react-icons/hi";
-// import LogoutButton from "./Logout";
+import { useEffect, useRef, useState } from "react";
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+import Image from "next/image";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { RxCross2 } from "react-icons/rx";
+import { User } from "@/app/chat/page";
+import { GoDotFill } from "react-icons/go";
 
-  const toggleNavbar = () => {
-    setIsOpen(!isOpen);
-  };
+export default function Sidebar({ data }: { data: User[] }) {
+  console.log("props: ", data);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
+  const toggleMobileMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
-    <>
-      <nav className="bg-black relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex-shrink-0">
-              <Link href="/" className="text-white text-lg font-bold">
-                𝖎❤️𝕯𝖊𝖊𝖕𝖚
-              </Link>
-            </div>
-            <div className="hidden md:flex md:ml-4">
-              <Link
-                href="/"
-                className="text-white hover:bg-pink-600 hover:text-white rounded-lg p-2 transition duration-200"
-              >
-                Notes
-              </Link>
-              <Link
-                href="/"
-                className="text-white hover:bg-pink-600 hover:text-white rounded-lg p-2 transition duration-200"
-              >
-                Chats
-              </Link>
-              <Link
-                href="/"
-                className="text-white hover:bg-pink-600 hover:text-white rounded-lg p-2 transition duration-200"
-              >
-                Add
-              </Link>
-              <Link
-                href="/"
-                className="text-white hover:bg-pink-600 hover:text-white rounded-lg p-2 transition duration-200"
-              >
-                Logout
-              </Link>
-            </div>
-            <div className="md:hidden">
-              <button
-                className="flex items-center justify-center p-2 rounded-md text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                onClick={toggleNavbar}
-                aria-label={isOpen ? "Close menu" : "Open menu"}
-              >
-                <HiMenuAlt3 size={25} />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Sidebar */}
-        <div
-          className={`fixed inset-x-0 top-0 bg-pink-500 transform transition-transform duration-300 ease-in-out ${
-            isOpen ? "translate-y-0" : "-translate-y-full"
-          } z-50`}
-        >
-          <div className="flex flex-col h-full px-4 pt-5 pb-3 space-y-1 text-center">
-            <div className="flex justify-between items-center">
-              <Link href="/" className="text-white text-lg font-bold">
-                𝖎❤️𝕯𝖊𝖊𝖕𝖚
-              </Link>
-              <button
-                className="text-white"
-                onClick={toggleNavbar}
-                aria-label="Close menu"
-              >
-                <IoClose size={25} />
-              </button>
-            </div>
-            <Link
-              href="/show-notes"
-              className="text-white font-mono font-bold block hover:bg-pink-700 rounded-lg p-2 transition duration-200 text-lg"
-              onClick={toggleNavbar}
-            >
-              Notes
-            </Link>
-            <Link
-              href="/chats"
-              className="text-white font-mono font-bold block hover:bg-pink-700 rounded-lg p-2 transition duration-200 text-lg"
-              onClick={toggleNavbar}
-            >
-              Chats
-            </Link>
-            <Link
-              href="/add-notes"
-              className="text-white font-mono font-bold block hover:bg-pink-700 rounded-lg p-2 transition duration-200 text-lg"
-              onClick={toggleNavbar}
-            >
-              Add
-            </Link>
-            <Link
-              href="/"
-              className="text-white font-mono font-bold bg-red-600 hover:bg-red-700 rounded-full p-2 transition duration-200 text-lg w-full"
-              onClick={toggleNavbar}
-            >
-              <div
-        // onClick={handleLogout}
-        className="text-[16px] cursor-pointer"
+    <header
+      className={`sticky top-0 z-50 shadow-md transition-all duration-300 backdrop-blur-md ${
+        isMobileMenuOpen ? "bg-black" : "bg-opacity-30"
+      }`}
+    >
+      <div
+        className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8"
+        ref={menuRef}
       >
-        Logout
-      </div>
-            </Link>
+        {/* Logo */}
+        <div>
+          <div className="sm:h-16 sm:w-12">
+            <Image
+              src="/logo.png"
+              width={40}
+              height={40}
+              className="h-full w-full"
+              alt="logo"
+            />
           </div>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={toggleMobileMenu}
+          className="md:hidden p-2 rounded-md"
+          aria-label="Toggle menu"
+        >
+          {!isMobileMenuOpen ? (
+            <RxHamburgerMenu size={25} className="text-darkgreen" />
+          ) : (
+            <RxCross2 size={25} className="text-darkgreen" />
+          )}
+        </button>
+      </div>
+
+      {/* Mobile Navigation */}
+      <nav
+        className={`md:hidden transform transition-all duration-300 ${
+          isMobileMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+        } overflow-hidden`}
+      >
+        <ul className="flex flex-col space-y-6 px-6 py-4 bg- shadow-lg rounded-lg">
+          {/* Online and Waiting Users */}
+          <div className="text-center space-y-2">
+            <div className="text-sm font-semibold text-blue-400">
+              User Statistics
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm font-semibold text-green-400">
+                Online Users:
+              </span>
+              <span className="font-medium text-green-400">{data.length}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm font-semibold text-yellow-400">
+                Waiting Users:
+              </span>
+              <span className="font-medium text-yellow-400">
+                {data.length % 2 === 0 ? 0 : 1}
+              </span>
+            </div>
+          </div>
+
+          {/* Connected Users */}
+          <div>
+            <h3 className="text-sm font-semibold text-blue-400 mb-2">
+              Connected Users (Online):
+            </h3>
+            <ul className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
+              {data.map((e, i) => (
+                <li key={i} className="flex items-center space-x-2">
+                  <span className="block w-3 h-3 bg-green-400 rounded-full"></span>
+                  <span className="text-sm font-semibold text-gray-100">
+                    {e.username}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Talking Users */}
+          <div>
+            <ul className="space-y-1 flex">
+              {data.length % 2 === 0 ? (
+                <li className="text-sm font-semibold text-red-400">
+                  No one is in waiting area.
+                </li>
+              ) : (
+                <li className="text-sm font-semibold text-green-500 flex items-center">
+                  Someone is in waiting area
+                  <span className="ml-2 flex space-x-1">
+                    <GoDotFill
+                      className="inline text-green-500 animate-bounce"
+                      style={{ animationDelay: "0s" }}
+                    />
+                    <GoDotFill
+                      className="inline text-green-500 animate-bounce"
+                      style={{ animationDelay: "0.2s" }}
+                    />
+                    <GoDotFill
+                      className="inline text-green-500 animate-bounce"
+                      style={{ animationDelay: "0.4s" }}
+                    />
+                  </span>
+                </li>
+              )}
+            </ul>
+          </div>
+        </ul>
       </nav>
-
-      {/* Background Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-75 transition-opacity duration-300 ease-in-out"
-          onClick={toggleNavbar}
-        ></div>
-      )}
-    </>
+    </header>
   );
-};
-
-export default Sidebar;
+}

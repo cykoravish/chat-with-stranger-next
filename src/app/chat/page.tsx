@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import ConnectingScreen from "@/components/ConnectingScreen";
 import Image from "next/image";
 import { IoSend } from "react-icons/io5";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/Sidebar";
 
-interface User {
+export interface User {
   id: string;
   username: string;
 }
@@ -33,7 +33,7 @@ export default function Chat() {
   const [message, setMessage] = useState<string>("");
   const [users, setUsers] = useState<User[]>([]);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const { name } = useAppContext();
   const router = useRouter();
   const socketRef = useRef(getSocket());
@@ -120,7 +120,7 @@ export default function Chat() {
     return <ConnectingScreen />;
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e?.target.value);
 
     const textarea = inputRef.current;
@@ -207,14 +207,14 @@ export default function Chat() {
       {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////// */}
       {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////// */}
 
-      <div className="min-h-screen flex flex-col dark:bg-black text-gray-200">
+      <div className="min-h-screen flex flex-col">
         <div className="overflow-hidden">
-          <div className="dark:bg-black text-center border-b border-gray-700 shadow-lg">
-            <Sidebar/>
-            <div className="flex items-center justify-center px-4"></div>         
+          <div className="text-center border-darkgreen border-b shadow-lg fixed w-full z-10">
+            <Sidebar data={users} />
+            <div className="flex items-center justify-center px-4"></div>
           </div>
-          
-          <div className="pt-32 pb-24 overflow-y-auto px-4">
+
+          <div className="pt-24 pb-24 overflow-y-auto px-4">
             <ul className="space-y-4">
               {chatMessages.map((msg, index) => (
                 <li
@@ -233,7 +233,7 @@ export default function Chat() {
                       alt={`${msg.username}'s avatar`}
                       width={40}
                       height={40}
-                      className="rounded-full border border-gray-600"
+                      className="rounded-full"
                     />
                     <span
                       className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${
@@ -246,11 +246,11 @@ export default function Chat() {
                   <div
                     className={`flex-1 p-3 rounded-[0.5rem] ${
                       msg.username === name
-                        ? "bg-blue-800 text-white"
+                        ? "bg-cyan-700 text-white"
                         : "bg-gray-800 text-gray-200"
                     } max-w-full overflow-hidden`}
                   >
-                    <p className="text-sm font-semibold text-cyan-300">
+                    <p className="text-sm font-bold  text-cyan-300">
                       {msg.username}
                     </p>
                     {msg.message && (
@@ -265,35 +265,45 @@ export default function Chat() {
             </ul>
           </div>
 
-          <form
-            onSubmit={sendMessage}
-            className="fixed bottom-0 left-0 right-0 dark:bg-black border-t border-blue-800 flex items-center rounded-full min-h-14 px-4 overflow-hidden mb-3"
-          >
-            <div className="relative flex-1 h-auto flex items-center justify-between space-x-2">
-              {/* Message Input */}
-              <textarea
-                ref={inputRef}
-                value={message}
-                onChange={handleInputChange}
-                placeholder="Message..."
-                rows={1}
-                className="w-full h-full dark:bg-black text-gray-200 resize-none placeholder:text-gray-500 placeholder:font-light placeholder:text-sm focus:outline-none"
-                style={{
-                  padding: "0.5rem 2rem",
-                  boxSizing: "border-box",
-                }}
-              />
-
-              {/* Send Button */}
+          {!connectionMsg.connected ? (
+            <div className="text-center fixed bottom-0 left-0 right-0 flex items-center rounded-full min-h-14 overflow-hidden mb-8">
               <button
-                type="submit"
-                disabled={!message?.trim()}
-                className="text-blue-600 disabled:text-gray-400 h-10 px-4 flex items-center justify-center rounded-lg font-bold transition-transform transform hover:scale-105 duration-150 ease-in-out"
+                className="bg-cyan-3r00 rounded-md text-red-500 w-full h-full py-4 text-sm"
+                onClick={() => reconnect()}
               >
-                <IoSend className="w-6 h-6" />
+                user disconneted! click here to find someone else
               </button>
             </div>
-          </form>
+          ) : (
+            <form
+              onSubmit={sendMessage}
+              className="fixed bottom-0 left-0 right-0 dark:bg-black border-t border-darkgreen flex items-center rounded-full min-h-14 px-4 overflow-hidden mb-3"
+            >
+              <div className="relative flex-1 h-auto flex items-center justify-between space-x-2">
+                <input
+                  ref={inputRef}
+                  value={message}
+                  onChange={handleInputChange}
+                  placeholder="Message..."
+                  className="w-full h-full resize-none placeholder:text-gray-500 placeholder:font-light placeholder:text-sm focus:outline-none
+                  px-4 text-base rounded-lg font-mono bg-transparent text-white
+                  "
+                  style={{
+                    padding: "0.5rem 2rem",
+                    boxSizing: "border-box",
+                  }}
+                />
+
+                <button
+                  type="submit"
+                  disabled={!message?.trim()}
+                  className="text-darkgreen disabled:text-gray-400 h-10 px-4 flex items-center justify-center rounded-lg font-bold transition-transform transform hover:scale-105 duration-150 ease-in-out"
+                >
+                  <IoSend className="w-6 h-6" />
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </>
