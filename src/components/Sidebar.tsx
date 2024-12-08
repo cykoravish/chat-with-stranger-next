@@ -49,7 +49,7 @@ export default function Sidebar({ data }: { data: User[] }) {
         {/* Mobile Menu Button */}
         <button
           onClick={toggleMobileMenu}
-          className="md:hidden p-2 rounded-md"
+          className="p-2 rounded-md"
           aria-label="Toggle menu"
         >
           {!isMobileMenuOpen ? (
@@ -62,7 +62,7 @@ export default function Sidebar({ data }: { data: User[] }) {
 
       {/* Mobile Navigation */}
       <nav
-        className={`md:hidden transform transition-all duration-300 ${
+        className={`transform transition-all duration-300 ${
           isMobileMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         } overflow-hidden`}
       >

@@ -17,12 +17,39 @@ export default function Page() {
     }
   }, [name]);
 
-  const submitNameHandler = () => {
-    if (inputName) {
-      setName(inputName);
-      document.cookie = `username=${inputName}; path=/;`; //should i use useEffect here
-      router.replace("/chat");
+  const submitNameHandler = async() => {
+     if (!inputName.trim()) {
+      alert('Please enter a name');
+      return;
     }
+    try {
+       // Send POST request to your API route
+       const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: inputName })
+      });
+
+      // Parse the response
+      const result = await response.json();
+
+      if(result.success){
+
+        setName(inputName);
+        document.cookie = `username=${inputName}; path=/;`; //should i use useEffect here
+        router.replace("/chat");
+      }else{
+        alert(result.message || 'Failed to submit name');
+      }
+
+    } catch (error) {
+      console.error('Error submitting name:', error);
+      alert('Failed to submit name. Please try again.');
+    }
+    
+   
   };
   return (
     <div>
