@@ -18,4 +18,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
-          script: "cd ~/chat-with-stranger-next && ./.scripts/deploy.sh"
+          debug: true  # Add verbose debugging
+          script: |
+            whoami  # Verify current user
+            pwd     # Check current directory
+            cd ~/chat-with-stranger-next
+            ls -la  # List files to verify path
+            ./.scripts/deploy.sh
