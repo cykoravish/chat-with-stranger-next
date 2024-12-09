@@ -98,7 +98,7 @@ export default function Page() {
                     "Start Chats"
                   ) : (
                     <div className="flex justify-center items-center gap-2">
-                    connecting..
+                    connecting...
                     <ImSpinner9 className="animate-spin" size={24} />
                     </div>
                   )}
