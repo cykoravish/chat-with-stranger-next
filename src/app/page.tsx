@@ -95,7 +95,7 @@ export default function Page() {
                   disabled={loading}
                 >
                   {!loading ? (
-                    "Start Chats"
+                    "Start Chat"
                   ) : (
                     <div className="flex justify-center items-center gap-2">
                     connecting...
